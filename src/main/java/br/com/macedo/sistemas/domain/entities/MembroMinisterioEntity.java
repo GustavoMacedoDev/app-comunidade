@@ -27,7 +27,7 @@ public class MembroMinisterioEntity extends PanacheEntityBase {
 
     private LocalDate dataEntrada;
 
-    private LocalDate dataSaida;
+    //private LocalDate dataSaida;
 
     private int responsavel;
 
@@ -35,7 +35,7 @@ public class MembroMinisterioEntity extends PanacheEntityBase {
     @JoinColumn(name = "id_membro")
     private MembroEntity membro;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "id_ministerio")
     private MinisterioEntity ministerio;
 

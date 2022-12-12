@@ -1,5 +1,6 @@
 package br.com.macedo.sistemas.services;
 
+import br.com.macedo.sistemas.domain.dto.cargo.ListaCargosDto;
 import br.com.macedo.sistemas.domain.dto.contato.ListaContatoDto;
 import br.com.macedo.sistemas.domain.dto.membro.CadastraMembroDto;
 import br.com.macedo.sistemas.domain.dto.membro.DetalhaMembroDto;
@@ -36,13 +37,12 @@ public class MembroService {
     public MensagemResposta cadastraMembro(CadastraMembroDto cadastraMembroDto) {
         validaMembroJaExistente(cadastraMembroDto.getCpf());
 
-
         MembroEntity membroEntity = new MembroEntity();
         membroEntity.setNome(cadastraMembroDto.getNome());
         membroEntity.setCpf(cadastraMembroDto.getCpf());
         membroEntity.setEndereco(cadastraMembroDto.getEndereco());
         membroEntity.setDataNascimento(cadastraMembroDto.getDataNascimento());
-        membroEntity.setCargo(buscaCargo(cadastraMembroDto.getIdCargo()));
+        membroEntity.setCargo(buscaCargoEntity(cadastraMembroDto.getIdCargo()));
 
         try {
             membroEntity.persist();
@@ -64,8 +64,14 @@ public class MembroService {
         return new MensagemResposta(membroEntity.getIdMembro(), "Membro cadastrado com sucesso");
     }
 
-    private CargoEntity buscaCargo(Long idCargo) {
+    private CargoEntity buscaCargoEntity(Long idCargo) {
         return cargoService.buscaCargoPeloId(idCargo);
+    }
+
+    private ListaCargosDto buscaCargo(Long idCargo) {
+        CargoEntity cargoEntity = cargoService.buscaCargoPeloId(idCargo);
+
+        return new ListaCargosDto(cargoEntity.getIdCargo(), cargoEntity.getNome());
     }
 
     private void validaMembroJaExistente(String cpf) {
@@ -89,6 +95,7 @@ public class MembroService {
             listaMembroDto.setEndereco(membroEntity.getEndereco());
             listaMembroDto.setDataNascimento(membroEntity.getDataNascimento());
             listaMembroDto.setCargo(buscaCargo(membroEntity.getCargo().getIdCargo()));
+            listaMembroDto.setContatos(buscaContatos(membroEntity.getIdMembro()));
             listaResponse.add(listaMembroDto);
         }
 
@@ -104,7 +111,7 @@ public class MembroService {
         membroEntity.setCpf(editaDadosMembroDto.getCpf());
         membroEntity.setEndereco(editaDadosMembroDto.getEndereco());
         membroEntity.setDataNascimento(editaDadosMembroDto.getDataNascimento());
-        membroEntity.setCargo(buscaCargo(editaDadosMembroDto.getIdCargo()));
+        membroEntity.setCargo(buscaCargoEntity(editaDadosMembroDto.getIdCargo()));
 
         try {
             membroEntity.persistAndFlush();

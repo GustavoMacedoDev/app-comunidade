@@ -9,6 +9,7 @@ import br.com.macedo.sistemas.utils.mensagens.MensagemResposta;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.validation.Valid;
@@ -45,6 +46,7 @@ public class MembroController {
 
     @GET
     @Path("/")
+    //@RolesAllowed({"groups", "admin"})
     @Operation(summary = "Lista todos os Membros", description = "Lista todos os Membros")
     public Response listaTodosMembros(){
         List<ListaMembroDto> listaMembroDto = membroService.listaTodosMembros();

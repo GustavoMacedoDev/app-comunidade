@@ -1,4 +1,4 @@
-package br.com.macedo.sistemas.domain.dto.ministerio;
+package br.com.macedo.sistemas.domain.dto.membroMinisterio;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +12,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class CadastraMembroMinisterioDto implements Serializable {
     private LocalDate dataEntrada;
-    private LocalDate dataSaida;
     private int responsavel;
     private Long idMembro;
     private Long idMinisterio;
