@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 
-@QuarkusTest
+//@QuarkusTest
 public class AuthenticationControllerTest {
 
     private String token;
