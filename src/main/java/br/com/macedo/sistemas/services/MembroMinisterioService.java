@@ -5,7 +5,6 @@ import br.com.macedo.sistemas.domain.dto.contato.ListaContatoDto;
 import br.com.macedo.sistemas.domain.dto.membro.ListaMembroDto;
 import br.com.macedo.sistemas.domain.dto.membroMinisterio.CadastraMembroMinisterioDto;
 import br.com.macedo.sistemas.domain.dto.membroMinisterio.ListaMembroPorMinisterioDto;
-import br.com.macedo.sistemas.domain.dto.ministerio.ListaMinisterioDto;
 import br.com.macedo.sistemas.domain.dto.perfil.ListaPerfilDto;
 import br.com.macedo.sistemas.domain.entities.CargoEntity;
 import br.com.macedo.sistemas.domain.entities.ContatoEntity;
@@ -14,6 +13,7 @@ import br.com.macedo.sistemas.domain.entities.MembroMinisterioEntity;
 import br.com.macedo.sistemas.domain.entities.MinisterioEntity;
 import br.com.macedo.sistemas.domain.entities.PerfilEntity;
 import br.com.macedo.sistemas.repository.MembroMinisterioRepository;
+import br.com.macedo.sistemas.utils.exceptions.ObjectNotFoundException;
 import br.com.macedo.sistemas.utils.mensagens.MensagemResposta;
 import org.jboss.logging.Logger;
 
@@ -23,6 +23,7 @@ import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class MembroMinisterioService {
@@ -50,6 +51,9 @@ public class MembroMinisterioService {
     @Transactional
     public MensagemResposta cadastraMembroMinisterio(CadastraMembroMinisterioDto cadastraMembroMinisterioDto) {
         MinisterioEntity ministerioEntity = buscaMinisterio(cadastraMembroMinisterioDto.getIdMinisterio());
+        buscaMembro(cadastraMembroMinisterioDto.getIdMembro());
+
+        validaVinculoMembroMinisterio(cadastraMembroMinisterioDto.getIdMinisterio(), cadastraMembroMinisterioDto.getIdMembro());
 
         MembroMinisterioEntity membroMinisterio = new MembroMinisterioEntity();
         membroMinisterio.setDataEntrada(cadastraMembroMinisterioDto.getDataEntrada());
@@ -68,6 +72,14 @@ public class MembroMinisterioService {
         return new MensagemResposta(membroMinisterio.getIdMembroMinisterio(),
                 "Membro cadastrado com sucesso ao ministério");
 
+    }
+
+    private void validaVinculoMembroMinisterio(Long idMinisterio, Long idMembro) {
+        Optional<MembroMinisterioEntity> membroMinisterio = membroMinisterioRepository.buscaMembroMinisterio(idMinisterio, idMembro);
+
+        if(membroMinisterio.isPresent()) {
+            throw new ObjectNotFoundException("Membro já vinculado ao ministério");
+        }
     }
 
     private PerfilEntity buscaPerfil(Long idPerfil) {
@@ -141,4 +153,12 @@ public class MembroMinisterioService {
     }
 
 
+    public List<MembroMinisterioEntity> buscaMembrosPorMinisterioId(Long idMinisterio) {
+
+        return membroMinisterioRepository.listaMembroPorMinisterio(idMinisterio);
+    }
+
+    public Optional<MembroMinisterioEntity> buscaMembrosPorPerfilId(Long idPerfil) {
+        return membroMinisterioRepository.buscaMembrosPorPerfilId(idPerfil);
+    }
 }

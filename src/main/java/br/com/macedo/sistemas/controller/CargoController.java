@@ -52,6 +52,15 @@ public class CargoController {
         return Response.status(Response.Status.OK).entity(listaCargosDto).build();
     }
 
+    @GET
+    @Path("/{idCargo}")
+    @Operation(summary = "Lista Cargo por ID", description = "Lista Cargo por ID")
+    public Response listaCargoPorId(@PathParam("idCargo") Long idCargo) {
+        ListaCargosDto listaCargosDto = cargoService.listaCargoPorId(idCargo);
+
+        return Response.status(Response.Status.OK).entity(listaCargosDto).build();
+    }
+
     @PUT
     @Path("/{idCargo}")
     @Operation(summary = "Edita os dados do cargo", description = "Edita os dados do cargo")

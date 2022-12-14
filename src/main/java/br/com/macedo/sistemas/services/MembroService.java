@@ -5,6 +5,7 @@ import br.com.macedo.sistemas.domain.dto.contato.ListaContatoDto;
 import br.com.macedo.sistemas.domain.dto.membro.CadastraMembroDto;
 import br.com.macedo.sistemas.domain.dto.membro.DetalhaMembroDto;
 import br.com.macedo.sistemas.domain.dto.membro.EditaDadosMembroDto;
+import br.com.macedo.sistemas.domain.dto.membro.ListaDadosMembrosDto;
 import br.com.macedo.sistemas.domain.dto.membro.ListaMembroDto;
 import br.com.macedo.sistemas.domain.entities.CargoEntity;
 import br.com.macedo.sistemas.domain.entities.ContatoEntity;
@@ -12,6 +13,7 @@ import br.com.macedo.sistemas.domain.entities.MembroEntity;
 import br.com.macedo.sistemas.repository.MembroRepository;
 import br.com.macedo.sistemas.utils.exceptions.ObjectNotFoundException;
 import br.com.macedo.sistemas.utils.mensagens.MensagemResposta;
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -84,10 +86,13 @@ public class MembroService {
     }
 
     public List<ListaMembroDto> listaTodosMembros() {
-        List<MembroEntity> listaMembros = MembroEntity.listAll();
+        PanacheQuery<MembroEntity> listaMembros = MembroEntity.findAll();
+        listaMembros.range(0, 3);
+
+        List<MembroEntity> listaMembrosEntity = listaMembros.list();
 
         List<ListaMembroDto> listaResponse = new ArrayList<>();
-        for(MembroEntity membroEntity: listaMembros){
+        for(MembroEntity membroEntity: listaMembrosEntity){
             ListaMembroDto listaMembroDto = new ListaMembroDto();
             listaMembroDto.setIdMembro(membroEntity.getIdMembro());
             listaMembroDto.setNome(membroEntity.getNome());
@@ -177,4 +182,23 @@ public class MembroService {
 
         return listaContatosResponse;
     }
+
+    public List<ListaDadosMembrosDto> listaDadosMembros() {
+        List<MembroEntity> listaMembros = MembroEntity.listAll();
+
+        List<ListaDadosMembrosDto> listaDadosResponse = new ArrayList<>();
+        for(MembroEntity membroEntity: listaMembros) {
+            ListaDadosMembrosDto listaDadosMembrosDto = new ListaDadosMembrosDto();
+            listaDadosMembrosDto.setIdMembro(membroEntity.getIdMembro());
+            listaDadosMembrosDto.setNome(membroEntity.getNome());
+            listaDadosMembrosDto.setCpf(membroEntity.getCpf());
+
+            listaDadosResponse.add(listaDadosMembrosDto);
+        }
+
+        return listaDadosResponse;
+
+
+    }
+
 }

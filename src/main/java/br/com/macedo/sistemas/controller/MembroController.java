@@ -3,6 +3,7 @@ package br.com.macedo.sistemas.controller;
 import br.com.macedo.sistemas.domain.dto.membro.CadastraMembroDto;
 import br.com.macedo.sistemas.domain.dto.membro.DetalhaMembroDto;
 import br.com.macedo.sistemas.domain.dto.membro.EditaDadosMembroDto;
+import br.com.macedo.sistemas.domain.dto.membro.ListaDadosMembrosDto;
 import br.com.macedo.sistemas.domain.dto.membro.ListaMembroDto;
 import br.com.macedo.sistemas.services.MembroService;
 import br.com.macedo.sistemas.utils.mensagens.MensagemResposta;
@@ -52,6 +53,15 @@ public class MembroController {
         List<ListaMembroDto> listaMembroDto = membroService.listaTodosMembros();
 
         return Response.status(Response.Status.OK).entity(listaMembroDto).build();
+    }
+
+    @GET
+    @Path("/vincular")
+    @Operation(summary = "Lista membros para vinculação", description = "Lista Dados de Membros para vinculação")
+    public Response listaDadosMembrosParaVinculacao() {
+        List<ListaDadosMembrosDto> listaDadosMembros = membroService.listaDadosMembros();
+
+        return Response.status(Response.Status.OK).entity(listaDadosMembros).build();
     }
 
     @GET

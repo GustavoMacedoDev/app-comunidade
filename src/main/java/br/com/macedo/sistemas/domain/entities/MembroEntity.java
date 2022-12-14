@@ -1,5 +1,6 @@
 package br.com.macedo.sistemas.domain.entities;
 
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,8 +12,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import java.time.LocalDate;
+import java.util.List;
 
 @Table(name = "membro")
 @Entity
@@ -35,4 +39,5 @@ public class MembroEntity extends PanacheEntityBase {
     @ManyToOne
     @JoinColumn(name = "id_cargo")
     private CargoEntity cargo;
+
 }

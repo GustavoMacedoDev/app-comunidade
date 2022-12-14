@@ -70,6 +70,7 @@ public class CargoService {
     @Transactional
     public MensagemResposta editaDadosCargo(Long idCargo, EditaCargoDto editaCargoDto) {
         CargoEntity cargoEntity = buscaCargoPeloId(idCargo);
+        verificaVinculoComMembro(idCargo);
         validaExistenciaCargoPeloNome(editaCargoDto.getNome());
 
         cargoEntity.setNome(editaCargoDto.getNome());
@@ -107,7 +108,17 @@ public class CargoService {
         List<MembroEntity> listaMembros = membroService.listaMembrosPorIdCargo(idCargo);
 
         if(!listaMembros.isEmpty()) {
-            throw new ObjectNotFoundException("Cargo não pode ser excluído pois possui vinculo com membros");
+            throw new ObjectNotFoundException("Cargo não pode ser excluído/alterado pois possui vinculo com membros");
         }
+    }
+
+    public ListaCargosDto listaCargoPorId(Long idCargo) {
+        CargoEntity cargoEntity = buscaCargoPeloId(idCargo);
+
+        ListaCargosDto listaCargosDto = new ListaCargosDto();
+        listaCargosDto.setIdCargo(cargoEntity.getIdCargo());
+        listaCargosDto.setNome(cargoEntity.getNome());
+
+        return listaCargosDto;
     }
 }

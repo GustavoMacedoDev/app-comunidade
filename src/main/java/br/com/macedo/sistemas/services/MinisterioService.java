@@ -3,6 +3,8 @@ package br.com.macedo.sistemas.services;
 import br.com.macedo.sistemas.domain.dto.ministerio.CadastraMinisterioDto;
 import br.com.macedo.sistemas.domain.dto.ministerio.EditaDadosMinisterioDto;
 import br.com.macedo.sistemas.domain.dto.ministerio.ListaMinisterioDto;
+import br.com.macedo.sistemas.domain.entities.MembroEntity;
+import br.com.macedo.sistemas.domain.entities.MembroMinisterioEntity;
 import br.com.macedo.sistemas.domain.entities.MinisterioEntity;
 import br.com.macedo.sistemas.repository.MinisterioRepository;
 import br.com.macedo.sistemas.utils.exceptions.ObjectNotFoundException;
@@ -21,6 +23,9 @@ public class MinisterioService {
 
     @Inject
     MinisterioRepository ministerioRepository;
+
+    @Inject
+    MembroMinisterioService membroMinisterioService;
 
     @Transactional
     public MensagemResposta cadastraMinisterio(CadastraMinisterioDto cadastraMinisterioDto) {
@@ -114,6 +119,8 @@ public class MinisterioService {
     public MensagemResposta deletaMinisterio(Long idMinisterio) {
         MinisterioEntity ministerioEntity = buscaMinisterioPorId(idMinisterio);
 
+        verificaVinculodeMembros(ministerioEntity.getIdMinisterio());
+
         try {
             ministerioEntity.delete();
         } catch (PersistenceException e) {
@@ -121,5 +128,13 @@ public class MinisterioService {
         }
 
         return new MensagemResposta(999L, "Ministerio deletado com sucesso");
+    }
+
+    private void verificaVinculodeMembros(Long idMinisterio) {
+        List<MembroMinisterioEntity> listaMembros = membroMinisterioService.buscaMembrosPorMinisterioId(idMinisterio);
+
+        if(!listaMembros.isEmpty()){
+            throw new ObjectNotFoundException("O ministério possui membros vinculados");
+        }
     }
 }

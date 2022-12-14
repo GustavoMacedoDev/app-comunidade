@@ -4,6 +4,8 @@ import br.com.macedo.sistemas.domain.entities.MembroEntity;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import java.util.List;
 import java.util.Optional;
 
