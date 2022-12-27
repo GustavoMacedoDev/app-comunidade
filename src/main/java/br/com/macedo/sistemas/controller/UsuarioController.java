@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
@@ -47,5 +48,14 @@ public class UsuarioController {
         List<ListaUsuarioDto> listaUsuarios = usuarioService.listaUsuarios();
 
         return Response.status(Response.Status.OK).entity(listaUsuarios).build();
+    }
+
+    @GET
+    @Path("/{idUsuario}")
+    @Operation(summary = "Lista Usuário por ID", description = "Lista Usuário por ID")
+    public Response listaUsuarioPorId(@PathParam("idUsuario") Long idUsuario){
+        ListaUsuarioDto listaUsuarioDto = usuarioService.buscaUsuarioPorId(idUsuario);
+
+        return Response.status(Response.Status.OK).entity(listaUsuarioDto).build();
     }
 }

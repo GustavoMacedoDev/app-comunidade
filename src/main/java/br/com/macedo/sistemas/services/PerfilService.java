@@ -3,7 +3,6 @@ package br.com.macedo.sistemas.services;
 import br.com.macedo.sistemas.domain.dto.perfil.CadastraPerfilDto;
 import br.com.macedo.sistemas.domain.dto.perfil.EditaPerfilDto;
 import br.com.macedo.sistemas.domain.dto.perfil.ListaPerfilDto;
-import br.com.macedo.sistemas.domain.entities.MembroEntity;
 import br.com.macedo.sistemas.domain.entities.MembroMinisterioEntity;
 import br.com.macedo.sistemas.domain.entities.PerfilEntity;
 import br.com.macedo.sistemas.repository.PerfilRepository;
@@ -50,10 +49,10 @@ public class PerfilService {
 
     @Transactional
     public MensagemResposta cadastrarPerfil(CadastraPerfilDto cadastraPerfilDto) {
-        validaExistenciaPerfil(cadastraPerfilDto.getNome());
+        validaExistenciaPerfil(cadastraPerfilDto.getNome().toUpperCase());
 
         PerfilEntity perfilEntity = new PerfilEntity();
-        perfilEntity.setNome(cadastraPerfilDto.getNome());
+        perfilEntity.setNome(cadastraPerfilDto.getNome().toUpperCase());
 
         try{
             perfilEntity.persist();
@@ -65,7 +64,7 @@ public class PerfilService {
     }
 
     private void validaExistenciaPerfil(String nome) {
-        Optional<PerfilEntity> perfil = perfilRepository.buscaPeloNome(nome);
+        Optional<PerfilEntity> perfil = perfilRepository.buscaPeloNome(nome.toUpperCase());
 
         if(perfil.isPresent()) {
             throw new ObjectNotFoundException("Perfil já cadastrado");
@@ -74,6 +73,8 @@ public class PerfilService {
 
     @Transactional
     public MensagemResposta editaPerfil(Long idPerfil, EditaPerfilDto editaPerfilDto) {
+        validaExistenciaPerfil(editaPerfilDto.getNome());
+        verificaVinculos(idPerfil);
         PerfilEntity perfil = buscaPerfilPorId(idPerfil);
 
         perfil.setNome(editaPerfilDto.getNome());

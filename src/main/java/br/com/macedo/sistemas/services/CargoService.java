@@ -15,6 +15,7 @@ import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -28,10 +29,10 @@ public class CargoService {
 
     @Transactional
     public MensagemResposta cadastraCargo(CadastraCargoDto cadastraCargoDto) {
-        validaExistenciaCargoPeloNome(cadastraCargoDto.getNome());
+        validaExistenciaCargoPeloNome(cadastraCargoDto.getNome().toUpperCase());
 
         CargoEntity cargo = new CargoEntity();
-        cargo.setNome(cadastraCargoDto.getNome());
+        cargo.setNome(cadastraCargoDto.getNome().toUpperCase());
 
         try {
             cargo.persist();
@@ -45,7 +46,7 @@ public class CargoService {
 
 
     private void validaExistenciaCargoPeloNome(String nome) {
-        Optional<CargoEntity> cargo = cargoRepository.buscaCargoPeloNome(nome);
+        Optional<CargoEntity> cargo = cargoRepository.buscaCargoPeloNome(nome.toUpperCase());
 
         if(cargo.isPresent()) {
             throw new ObjectNotFoundException("Cargo já cadastrado");
@@ -71,9 +72,9 @@ public class CargoService {
     public MensagemResposta editaDadosCargo(Long idCargo, EditaCargoDto editaCargoDto) {
         CargoEntity cargoEntity = buscaCargoPeloId(idCargo);
         verificaVinculoComMembro(idCargo);
-        validaExistenciaCargoPeloNome(editaCargoDto.getNome());
+        validaExistenciaCargoPeloNome(editaCargoDto.getNome().toUpperCase());
 
-        cargoEntity.setNome(editaCargoDto.getNome());
+        cargoEntity.setNome(editaCargoDto.getNome().toUpperCase());
 
         try {
             cargoEntity.persist();
