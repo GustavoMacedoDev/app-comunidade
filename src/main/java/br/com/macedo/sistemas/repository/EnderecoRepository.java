@@ -12,4 +12,12 @@ public class EnderecoRepository implements PanacheRepository<EnderecoEntity> {
     public List<EnderecoEntity> buscaEnderecoPorIdMembro(Long idMembro) {
         return find("membro.idMembro", idMembro).list();
     }
+
+    public List<EnderecoEntity> buscaEnderecoPorIdLogradouro(Long idLogradouro) {
+        return find("logradouro.idLogradouro", idLogradouro).list();
+    }
+
+    public List<EnderecoEntity> buscaEnderecoPorIdBairro(Long idBairro) {
+        return find("bairro.idBairro", idBairro).list();
+    }
 }

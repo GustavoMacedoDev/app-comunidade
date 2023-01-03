@@ -93,6 +93,7 @@ public class TipoLogradouroService {
         }
     }
 
+    @Transactional
     public MensagemResposta deletaTipoLogradouroSemVinculos(Long idTipoLogradouro) {
         var tipoLogradouro = buscaTipoLogradouro(idTipoLogradouro);
         verificarVinculoComLogradouro(idTipoLogradouro);

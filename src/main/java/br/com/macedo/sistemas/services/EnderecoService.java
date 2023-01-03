@@ -84,4 +84,13 @@ public class EnderecoService {
 
         return listaResponse;
     }
+
+    public List<EnderecoEntity> buscaEnderecosPorIdLogradouro(Long idLogradouro) {
+        return enderecoRepository.buscaEnderecoPorIdLogradouro(idLogradouro);
+    }
+
+
+    public List<EnderecoEntity> buscaEnderecoPorIdBairro(Long idBairro) {
+        return enderecoRepository.buscaEnderecoPorIdBairro(idBairro);
+    }
 }

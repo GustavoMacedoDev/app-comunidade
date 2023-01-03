@@ -1,13 +1,11 @@
 package br.com.macedo.sistemas.services;
 
 import br.com.macedo.sistemas.domain.dto.cargo.ListaCargosDto;
-import br.com.macedo.sistemas.domain.dto.contato.ListaContatoDto;
 import br.com.macedo.sistemas.domain.dto.membro.ListaMembroDto;
 import br.com.macedo.sistemas.domain.dto.membroMinisterio.CadastraMembroMinisterioDto;
 import br.com.macedo.sistemas.domain.dto.membroMinisterio.ListaMembroPorMinisterioDto;
 import br.com.macedo.sistemas.domain.dto.perfil.ListaPerfilDto;
 import br.com.macedo.sistemas.domain.entities.CargoEntity;
-import br.com.macedo.sistemas.domain.entities.ContatoEntity;
 import br.com.macedo.sistemas.domain.entities.MembroEntity;
 import br.com.macedo.sistemas.domain.entities.MembroMinisterioEntity;
 import br.com.macedo.sistemas.domain.entities.MinisterioEntity;
@@ -41,9 +39,6 @@ public class MembroMinisterioService {
 
     @Inject
     CargoService cargoService;
-
-    @Inject
-    ContatoService contatoService;
 
     @Inject
     MembroMinisterioRepository membroMinisterioRepository;
@@ -125,25 +120,8 @@ public class MembroMinisterioService {
         listaMembroDto.setEndereco(membro.getEndereco());
         listaMembroDto.setDataNascimento(membro.getDataNascimento());
         listaMembroDto.setCargo(buscaCargos(membro.getCargo().getIdCargo()));
-        listaMembroDto.setContatos(buscaContatosPeloIdMembro(membro.getIdMembro()));
 
         return listaMembroDto;
-    }
-
-    private List<ListaContatoDto> buscaContatosPeloIdMembro(Long idMembro) {
-        List<ContatoEntity> listaContatos = contatoService.buscaContatosPorIdMembro(idMembro);
-
-        List<ListaContatoDto> listaContatosResponse = new ArrayList<>();
-        for(ContatoEntity contatoEntity : listaContatos) {
-            ListaContatoDto listaContatoDto = new ListaContatoDto();
-            listaContatoDto.setIdContato(contatoEntity.getIdContato());
-            listaContatoDto.setEmail(contatoEntity.getEmail());
-            listaContatoDto.setTelefone(contatoEntity.getTelefone());
-
-            listaContatosResponse.add(listaContatoDto);
-        }
-
-        return listaContatosResponse;
     }
 
     private ListaCargosDto buscaCargos(Long idCargo) {

@@ -1,5 +1,6 @@
 package br.com.macedo.sistemas.services;
 
+import br.com.macedo.sistemas.domain.dto.endereco.AlteraDadosLogradouroDto;
 import br.com.macedo.sistemas.domain.dto.endereco.CadastraLogradouroDto;
 import br.com.macedo.sistemas.domain.dto.endereco.ListaLogradouroDto;
 import br.com.macedo.sistemas.domain.entities.enderecos.LogradouroEntity;
@@ -25,10 +26,13 @@ public class LogradouroService {
     @Inject
     LogradouroRepository logradouroRepository;
 
+    @Inject
+    EnderecoService enderecoService;
+
     @Transactional
     public MensagemResposta cadastraLogradouro(CadastraLogradouroDto cadastraLogradouroDto) {
-        LogradouroEntity logradouro = new LogradouroEntity();
-        logradouro.setNome(cadastraLogradouroDto.getNome());
+        var logradouro = new LogradouroEntity();
+        logradouro.setNome(cadastraLogradouroDto.getNome().toUpperCase());
         logradouro.setTipoLogradouro(buscaTipoLogradouro(cadastraLogradouroDto.getIdTipoLogradouro()));
 
         try {
@@ -48,8 +52,8 @@ public class LogradouroService {
         List<LogradouroEntity> logradouro = LogradouroEntity.listAll();
 
         List<ListaLogradouroDto> listaResponse = new ArrayList<>();
-        for(LogradouroEntity logradouroEntity: logradouro) {
-            ListaLogradouroDto listaLogradouroDto = new ListaLogradouroDto();
+        for(var logradouroEntity: logradouro) {
+            var listaLogradouroDto = new ListaLogradouroDto();
             listaLogradouroDto.setIdLogradouro(logradouroEntity.getIdLogradouro());
             listaLogradouroDto.setNome(logradouroEntity.getNome());
 
@@ -66,8 +70,58 @@ public class LogradouroService {
     }
 
     public List<LogradouroEntity> buscaLogradouroPorIdTipoLogradouro(Long idTipoLogradouro) {
-        List<LogradouroEntity> logradouros = logradouroRepository.buscaLogradouroPorIdTipoLogradouro(idTipoLogradouro);
 
-        return logradouros;
+        return logradouroRepository.buscaLogradouroPorIdTipoLogradouro(idTipoLogradouro);
+    }
+
+    public ListaLogradouroDto buscaLogradouroPorId(Long idLogradouro) {
+        var logradouro = buscaLogradouro(idLogradouro);
+
+        var listaLogradouroDto = new ListaLogradouroDto();
+        listaLogradouroDto.setIdLogradouro(logradouro.getIdLogradouro());
+        listaLogradouroDto.setNome(logradouro.getNome());
+
+        return listaLogradouroDto;
+
+    }
+
+    @Transactional
+    public MensagemResposta alteraDadosLogradouro(Long idLogradouro, AlteraDadosLogradouroDto alteraDadosLogradouroDto) {
+        var logradouro = buscaLogradouro(idLogradouro);
+        verificaVinculoComEndereco(idLogradouro);
+
+        logradouro.setNome(alteraDadosLogradouroDto.getNome().toUpperCase());
+        logradouro.setTipoLogradouro(buscaTipoLogradouro(idLogradouro));
+
+        try {
+            logradouro.persist();
+        } catch (PersistenceException e) {
+            throw new ObjectNotFoundException(e.getMessage());
+        }
+
+        return new MensagemResposta(logradouro.getIdLogradouro(), "Logradouro alterado com sucesso");
+    }
+
+    private void verificaVinculoComEndereco(Long idLogradouro) {
+        var enderecos = enderecoService.buscaEnderecosPorIdLogradouro(idLogradouro);
+
+        if (!enderecos.isEmpty()) {
+            throw new ObjectNotFoundException("Logradouro não pode ser alterado/excluido pois possui vinculo com endereço");
+        }
+    }
+
+    @Transactional
+    public MensagemResposta deletaLogradouro(Long idLogradouro) {
+        var logradouro = buscaLogradouro(idLogradouro);
+        verificaVinculoComEndereco(idLogradouro);
+
+        try {
+            logradouro.delete();
+        } catch (PersistenceException e) {
+            throw new PersistenceException(e.getMessage());
+        }
+
+        return new MensagemResposta(999L, "Logradouro deletado com sucesso");
+
     }
 }
