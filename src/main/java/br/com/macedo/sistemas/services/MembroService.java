@@ -1,7 +1,6 @@
 package br.com.macedo.sistemas.services;
 
 import br.com.macedo.sistemas.domain.dto.cargo.ListaCargosDto;
-import br.com.macedo.sistemas.domain.dto.contato.ListaContatoDto;
 import br.com.macedo.sistemas.domain.dto.membro.CadastraMembroDto;
 import br.com.macedo.sistemas.domain.dto.membro.DetalhaMembroDto;
 import br.com.macedo.sistemas.domain.dto.membro.EditaDadosMembroDto;
@@ -87,7 +86,7 @@ public class MembroService {
 
     public List<ListaMembroDto> listaTodosMembros() {
         PanacheQuery<MembroEntity> listaMembros = MembroEntity.findAll();
-        listaMembros.range(0, 3);
+        listaMembros.range(0, 30);
 
         List<MembroEntity> listaMembrosEntity = listaMembros.list();
 
@@ -100,7 +99,6 @@ public class MembroService {
             listaMembroDto.setEndereco(membroEntity.getEndereco());
             listaMembroDto.setDataNascimento(membroEntity.getDataNascimento());
             listaMembroDto.setCargo(buscaCargo(membroEntity.getCargo().getIdCargo()));
-            listaMembroDto.setContatos(buscaContatos(membroEntity.getIdMembro()));
             listaResponse.add(listaMembroDto);
         }
 
@@ -160,27 +158,10 @@ public class MembroService {
         detalhaMembroDto.setEndereco(membroEntity.getEndereco());
         detalhaMembroDto.setDataNascimento(membroEntity.getDataNascimento());
         detalhaMembroDto.setCpf(membroEntity.getCpf());
-        detalhaMembroDto.setCargoNome(buscaCargo(membroEntity.getCargo().getIdCargo()).getNome());
-
-        detalhaMembroDto.setContatos(buscaContatos(id));
+        detalhaMembroDto.setCargo(buscaCargo(membroEntity.getCargo().getIdCargo()).getNome());
 
         return detalhaMembroDto;
 
-    }
-
-    private List<ListaContatoDto> buscaContatos(Long id) {
-        List<ContatoEntity> listaContatos = contatoService.buscaContatosPorIdMembro(id);
-
-        List<ListaContatoDto> listaContatosResponse = new ArrayList<>();
-        for(ContatoEntity contatoEntity : listaContatos){
-            ListaContatoDto listaContatoDto = new ListaContatoDto();
-            listaContatoDto.setEmail(contatoEntity.getEmail());
-            listaContatoDto.setTelefone(contatoEntity.getTelefone());
-
-            listaContatosResponse.add(listaContatoDto);
-        }
-
-        return listaContatosResponse;
     }
 
     public List<ListaDadosMembrosDto> listaDadosMembros() {

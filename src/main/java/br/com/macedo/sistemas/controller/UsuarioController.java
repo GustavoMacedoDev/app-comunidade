@@ -1,5 +1,6 @@
 package br.com.macedo.sistemas.controller;
 
+import br.com.macedo.sistemas.domain.dto.usuario.AlteraDadosUsuarioDto;
 import br.com.macedo.sistemas.domain.dto.usuario.CadastraUsuarioDto;
 import br.com.macedo.sistemas.domain.dto.usuario.ListaUsuarioDto;
 import br.com.macedo.sistemas.services.UsuarioService;
@@ -11,8 +12,10 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -57,5 +60,23 @@ public class UsuarioController {
         ListaUsuarioDto listaUsuarioDto = usuarioService.buscaUsuarioPorId(idUsuario);
 
         return Response.status(Response.Status.OK).entity(listaUsuarioDto).build();
+    }
+
+    @PUT
+    @Path("/{idUsuario}")
+    @Operation(summary = "Altera dados usuário", description = "Altera dados usuarios")
+    public Response alteraDadosUsuario(@PathParam("idUsuario") Long idUsuario, AlteraDadosUsuarioDto alteraDadosUsuarioDto){
+        MensagemResposta mensagemResposta = usuarioService.alteraDadosUsuario(idUsuario, alteraDadosUsuarioDto);
+
+        return Response.status(Response.Status.OK).entity(mensagemResposta).build();
+    }
+
+    @DELETE
+    @Path("/{idUsuario}")
+    @Operation(summary = "Deleta um usuário sem vinculos", description = "Deleta um usuario sem vinculos")
+    public Response deletaUsuario(@PathParam("idUsuario") Long idUsuario) {
+        MensagemResposta mensagemResposta = usuarioService.deletaUsuario(idUsuario);
+
+        return Response.status(Response.Status.OK).entity(mensagemResposta).build();
     }
 }

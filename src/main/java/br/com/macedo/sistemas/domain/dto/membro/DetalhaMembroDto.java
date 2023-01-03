@@ -18,6 +18,5 @@ public class DetalhaMembroDto implements Serializable {
     private String cpf;
     private String endereco;
     private LocalDate dataNascimento;
-    private String cargoNome;
-    private List<ListaContatoDto> contatos;
+    private String cargo;
 }

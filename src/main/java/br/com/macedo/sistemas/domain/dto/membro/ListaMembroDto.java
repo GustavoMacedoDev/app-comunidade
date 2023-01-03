@@ -21,5 +21,4 @@ public class ListaMembroDto implements Serializable {
     private String endereco;
     private LocalDate dataNascimento;
     private ListaCargosDto cargo;
-    private List<ListaContatoDto> contatos;
 }
